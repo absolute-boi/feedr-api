@@ -12,116 +12,112 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe "/caterers", type: :request do
-  # This should return the minimal set of attributes required to create a valid
-  # Caterer. As you add validations to Caterer, be sure to
-  # adjust the attributes here as well.
-  let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
-  }
-
-  let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
-  }
-
+RSpec.describe '/caterers', type: :request do
   # This should return the minimal set of values that should be in the headers
   # in order to pass any filters (e.g. authentication) defined in
   # CaterersController, or in your router and rack
   # middleware. Be sure to keep this updated too.
-  let(:valid_headers) {
+  let(:valid_headers) do
     {}
-  }
+  end
 
-  describe "GET /index" do
-    it "renders a successful response" do
-      Caterer.create! valid_attributes
-      get caterers_url, headers: valid_headers, as: :json
+  describe 'GET /index' do
+    let!(:caterer) do
+      create :caterer,
+             address: '233 S. Wacker Drive',
+             city: 'Chicago',
+             state: 'IL',
+             zip: '60606'
+    end
+
+    it 'renders a successful response' do
+      get "/caterers?lat=#{caterer.latitude}&lon=#{caterer.longitude}&order_type=on_site", as: :json
       expect(response).to be_successful
     end
   end
 
-  describe "GET /show" do
-    it "renders a successful response" do
+  describe 'GET /show' do
+    it 'renders a successful response' do
       caterer = Caterer.create! valid_attributes
       get caterer_url(caterer), as: :json
       expect(response).to be_successful
     end
   end
 
-  describe "POST /create" do
-    context "with valid parameters" do
-      it "creates a new Caterer" do
-        expect {
+  describe 'POST /create' do
+    context 'with valid parameters' do
+      it 'creates a new Caterer' do
+        expect do
           post caterers_url,
                params: { caterer: valid_attributes }, headers: valid_headers, as: :json
-        }.to change(Caterer, :count).by(1)
+        end.to change(Caterer, :count).by(1)
       end
 
-      it "renders a JSON response with the new caterer" do
+      it 'renders a JSON response with the new caterer' do
         post caterers_url,
              params: { caterer: valid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
-        expect(response.content_type).to match(a_string_including("application/json"))
+        expect(response.content_type).to match(a_string_including('application/json'))
       end
     end
 
-    context "with invalid parameters" do
-      it "does not create a new Caterer" do
-        expect {
+    context 'with invalid parameters' do
+      it 'does not create a new Caterer' do
+        expect do
           post caterers_url,
                params: { caterer: invalid_attributes }, as: :json
-        }.to change(Caterer, :count).by(0)
+        end.to change(Caterer, :count).by(0)
       end
 
-      it "renders a JSON response with errors for the new caterer" do
+      it 'renders a JSON response with errors for the new caterer' do
         post caterers_url,
              params: { caterer: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to match(a_string_including("application/json"))
+        expect(response.content_type).to match(a_string_including('application/json'))
       end
     end
   end
 
-  describe "PATCH /update" do
-    context "with valid parameters" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
+  describe 'PATCH /update' do
+    context 'with valid parameters' do
+      let(:new_attributes) do
+        skip('Add a hash of attributes valid for your model')
+      end
 
-      it "updates the requested caterer" do
+      it 'updates the requested caterer' do
         caterer = Caterer.create! valid_attributes
         patch caterer_url(caterer),
               params: { caterer: new_attributes }, headers: valid_headers, as: :json
         caterer.reload
-        skip("Add assertions for updated state")
+        skip('Add assertions for updated state')
       end
 
-      it "renders a JSON response with the caterer" do
+      it 'renders a JSON response with the caterer' do
         caterer = Caterer.create! valid_attributes
         patch caterer_url(caterer),
               params: { caterer: new_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
-        expect(response.content_type).to match(a_string_including("application/json"))
+        expect(response.content_type).to match(a_string_including('application/json'))
       end
     end
 
-    context "with invalid parameters" do
-      it "renders a JSON response with errors for the caterer" do
+    context 'with invalid parameters' do
+      it 'renders a JSON response with errors for the caterer' do
         caterer = Caterer.create! valid_attributes
         patch caterer_url(caterer),
               params: { caterer: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to match(a_string_including("application/json"))
+        expect(response.content_type).to match(a_string_including('application/json'))
       end
     end
   end
 
-  describe "DELETE /destroy" do
-    it "destroys the requested caterer" do
+  describe 'DELETE /destroy' do
+    it 'destroys the requested caterer' do
       caterer = Caterer.create! valid_attributes
-      expect {
+      expect do
         delete caterer_url(caterer), headers: valid_headers, as: :json
-      }.to change(Caterer, :count).by(-1)
+      end.to change(Caterer, :count).by(-1)
     end
   end
 end
